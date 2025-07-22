@@ -493,6 +493,203 @@ print(is_number_palindrome(121))  # True
 print(is_number_palindrome(123))  # False
 
 
+# 41. Найти сумму всех простых чисел до n
+def sum_primes(n):
+    return sum(x for x in range(2, n+1) if is_prime(x))  # 23 задача
+
+print(sum_primes(10))  # 17
+
+# 42. Удалить дубликаты из списка, сохранив порядок
+def remove_duplicates_ordered(lst):
+    uniq = []
+    for i in lst:
+        if i not in uniq:
+            uniq.append(i)
+    return uniq
+
+
+# or: решение
+def remove_duplicates_ordered2(lst):
+    seen = set()
+    return [x for x in lst if not (x in seen or seen.add(x))]
+
+
+# or
+def remove_duplicates_ordered3(lst):
+    seen = set()
+    unique = []
+
+    for x in lst:
+        if x not in seen:
+            seen.add(x)
+            unique.append(x)
+
+    return unique
+
+
+print(remove_duplicates_ordered([1, 2, 2, 3, 3]))  # [1, 2, 3]
+print(remove_duplicates_ordered2([1, 2, 2, 3, 3]))  # [1, 2, 3]
+print(remove_duplicates_ordered3([1, 2, 2, 3, 3]))  # [1, 2, 3]
+
+
+
+
+# 43. Проверить, является ли строка панграммой
+# Панграмма — это строка, содержащая все буквы алфавита хотя бы один раз.
+def is_pangram(s):
+    return set("abcdefghijklmnopqrstuvwxyz").issubset(set(s.lower()))
+
+print(is_pangram("The quick brown fox jumps over the lazy Dog"))  # True
+print(is_pangram("the quick brown fox jumps over the lazy dog"))  # True
+
+
+
+# 44. Найти пересечение двух списков
+def list_intersection(lst1, lst2):
+    return set(lst1).intersection(set(lst2))
+
+
+# or: решение
+def list_intersection2(lst1, lst2):
+    return list(set(lst1) & set(lst2))
+
+print(list_intersection([1, 2, 3], [2, 3, 4]))  # {2, 3}
+print(list_intersection2([1, 2, 3], [2, 3, 4]))  # [2, 3]
+
+# 45. Найти наибольшую общую подстроку двух строк
+def longest_common_substring(s1, s2):
+    max_len = 0
+    lcs = ''
+
+    for i in range(len(s1)):
+        for j in range(len(s2)):
+            k = 0
+            while (i + k < len(s1)) and (j + k < len(s2)) and (s1[i + k] == s2[j + k]):
+                k += 1
+            if k > max_len:
+                max_len = k
+                lcs = s1[i:i + k]
+
+    return lcs
+
+
+# or: решение
+def longest_common_substring2(s1, s2):
+    # Это класс, который умеет сравнивать две строки
+    # и находить совпадающие подстроки.
+    from difflib import SequenceMatcher
+    match = SequenceMatcher(None, s1, s2).find_longest_match(0, len(s1), 0, len(s2))
+    return s1[match.a: match.a + match.size]
+
+
+
+
+print(longest_common_substring("abcdef", "zcdemf"))  # "cde"
+print(longest_common_substring2("abcdef", "zcdemf"))  # "cde"
+
+
+
+# 46. Найти произведение всех элементов списка
+def product_of_list(lst):
+    result = 1
+    for num in lst:
+        result *= num
+    return result
+
+# or: решение
+def product_of_list2(lst):
+    # reduce применяет операцию поэтапно ко всем элементам.
+    from functools import reduce
+    return reduce(lambda x, y: x * y, lst, 1)
+
+# or
+def product_of_list3(lst):
+    from functools import reduce
+    from operator import mul
+    return reduce(mul, lst, 1)
+
+
+
+print(product_of_list([1, 2, 3, 4]))  # 24
+print(product_of_list2([1, 2, 3, 4]))  # 24
+print(product_of_list3([1, 2, 3, 4]))  # 24
+
+# 47. Проверить, является ли список монотонным
+def is_monotonic(lst):
+    increasing = decreasing = True # Объявляем два флага
+
+    for i in range(1, len(lst)):
+        if lst[i] > lst[i-1]:
+            decreasing = False
+        if lst[i] < lst[i-1]:
+            increasing = False
+    #Если хотя бы один из флагов остался True, значит список монотонный.
+    return increasing or decreasing
+
+
+# or
+# all() — возвращает True, если все элементы генератора дают True.
+def is_monotonic2(lst):
+    return (all(lst[i] >= lst[i-1] for i in range(1, len(lst))) or
+            all(lst[i] <= lst[i-1] for i in range(1, len(lst))))
+
+
+# or: решение
+def is_monotonic3(lst):
+    return all(x <= y for x, y in zip(lst, lst[1:])) or all(x >= y for x, y in zip(lst, lst[1:]))
+
+
+print(is_monotonic([1, 2, 3]))  # True
+print(is_monotonic2([1, 2, 3]))  # True
+print(is_monotonic3([1, 2, 3]))  # True
+
+# 48. Найти первый неповторяющийся символ в строке
+def first_unique_char(s):
+    for i in s:
+        count = s.count(i)
+        if count == 1:
+            return i
+
+# or
+def first_unique_char2(s):
+    from collections import Counter
+    count = Counter(s)
+    for char in s:
+        if count[char] == 1:
+            return char
+    return None
+
+# or
+def first_unique_char3(s):
+    char_count = {}
+    for c in s:
+        char_count[c] = char_count.get(c, 0) + 1
+
+    for c in s:
+        if char_count[c] == 1:
+            return c
+    return None
+
+
+print(first_unique_char("swiss"))  # "w"
+print(first_unique_char2("swiss"))  # "w"
+print(first_unique_char3("swiss"))  # "w"
+
+# 49. Найти все перестановки строки
+def string_permutations(s):
+    from itertools import permutations
+    return ["".join(p) for p in permutations(s)]
+
+print(string_permutations("abc"))  # ['abc', 'acb', 'bac', 'bca', 'cab', 'cba']
+
+
+# 50. Проверить, можно ли составить строку из слов в списке
+def can_form_string(words, target):
+    words_str = "".join(words)
+    return sorted(words_str) == sorted(target)
+
+
+print(can_form_string(["hello", "world"], "helloworld"))  # True
 
 
 
