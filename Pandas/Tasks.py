@@ -194,15 +194,42 @@ most_popular_products = monthly_product_sales.loc[
 print(most_popular_products)
 
 
+# 31. Добавить таблицу с городами клиентов и объединить её с основным DataFrame по имени клиента.
+merged_df_31 = df.merge(customers, on='customer_name', how='left')
+print('31. Добавить таблицу с городами клиентов\n', merged_df_31)
 
+# 32. Объединить таблицу со средним рейтингом товара по названию продукта.
+avg_rating = df.groupby('product')['rating'].mean().reset_index(name="avg_rating")
+merged_df_32 = df.merge(avg_rating, on='product', how='left')
+print('32. Объединить таблицу со средним рейтингом товара по названию продукта\n', merged_df_32 )
+
+# 33. Найти клиентов, которые заказывали только один уникальный товар, и
+# объединить с основным DataFrame.
+n_uniq_products = df.groupby('customer_name')['product'].nunique().reset_index(name="product_count")
+customer_with_uniq_prod = n_uniq_products[n_uniq_products['product_count'] == 1]
+df_uniq_prod = df.merge(customer_with_uniq_prod['customer_name'], on='customer_name')
+print('33. Найти клиентов, которые заказывали только один уникальный товар\n', df_uniq_prod  )
+
+# or: решение
+unique_products = df.groupby("customer_name")["product"].nunique().reset_index(name="product_count")
+one_product_customers = unique_products[unique_products["product_count"] == 1]
+df_one_product = df.merge(one_product_customers[["customer_name"]], on="customer_name")
+print(df_one_product)
 
 print('\n',  )
-# 31. Добавить таблицу с городами клиентов и объединить её с основным DataFrame по имени клиента.
-# 32. Объединить таблицу со средним рейтингом товара по названию продукта.
-# 33. Найти клиентов, которые заказывали только один уникальный товар, и объединить с основным DataFrame.
 # 34. Получить описательную статистику по всем числовым столбцам основного DataFrame.
+print('34. Получить описательную статистику\n', df.describe() )
+
+
 # 35. Получить описательную статистику по цене и количеству в разрезе категорий.
+print('\n', df.groupby('category')[['price', 'quantity']].describe() )
+
+
 # 36. Найти товары с наибольшим средним чеком (цена × количество).
+df["total"] = df["price"] * df["quantity"]
+avg_check = df.groupby("product")["total"].mean().sort_values(ascending=False)
+print('36. Найти товары с наибольшим средним чеком\n', avg_check)
+
 # 37. Построить корреляционную матрицу для всех числовых столбцов.
 # 38. Найти три признака с наибольшей корреляцией по модулю с total (цена × количество).
 # 39. Вычислить корреляцию между количеством (quantity) и рейтингом (rating).
