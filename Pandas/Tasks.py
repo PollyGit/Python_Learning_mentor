@@ -216,13 +216,13 @@ one_product_customers = unique_products[unique_products["product_count"] == 1]
 df_one_product = df.merge(one_product_customers[["customer_name"]], on="customer_name")
 print(df_one_product)
 
-print('\n',  )
+
 # 34. Получить описательную статистику по всем числовым столбцам основного DataFrame.
 print('34. Получить описательную статистику\n', df.describe() )
 
 
 # 35. Получить описательную статистику по цене и количеству в разрезе категорий.
-print('\n', df.groupby('category')[['price', 'quantity']].describe() )
+print('35. Получить описательную статистику по цене и количеству в разрезе категорий\n', df.groupby('category')[['price', 'quantity']].describe() )
 
 
 # 36. Найти товары с наибольшим средним чеком (цена × количество).
@@ -231,6 +231,37 @@ avg_check = df.groupby("product")["total"].mean().sort_values(ascending=False)
 print('36. Найти товары с наибольшим средним чеком\n', avg_check)
 
 # 37. Построить корреляционную матрицу для всех числовых столбцов.
+corr_matrix = df.corr(numeric_only=True)
+print('37. Построить корреляционную матрицу \n', corr_matrix)
+
 # 38. Найти три признака с наибольшей корреляцией по модулю с total (цена × количество).
+correlations = df.corr(numeric_only=True)["total"].drop(["total", 'order_sum', 'total_spent']).abs().sort_values(ascending=False)
+print('Найти три признака с наибольшей корреляцией по модулю с total\n', correlations.head(3) )
+
+
 # 39. Вычислить корреляцию между количеством (quantity) и рейтингом (rating).
+corr_quantity_rating = df[["quantity", "rating"]].corr().iloc[0, 1]
+corr_quantity_rating2 = df["quantity"].corr(df["rating"])
+print('39. Вычислить корреляцию между количеством (quantity) и рейтингом (rating) \n', corr_quantity_rating )
+print('39. Вычислить корреляцию между количеством (quantity) и рейтингом (rating) \n', corr_quantity_rating2 )
+
+
 # 40. Визуализировать тепловую карту корреляций с помощью seaborn.
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(8, 6))  # задаём размер графика
+sns.heatmap(df.corr(numeric_only=True).drop(['order_sum', 'total_spent']), annot=True, cmap="coolwarm", fmt=".2f")
+plt.title("Корреляционная матрица", fontsize=14)
+plt.show()
+print('\n',  )
+
+# тепловая карта, которая показывает только корреляции с order_sum
+# Считаем корреляции с order_sum и превращаем в DataFrame для тепловой карты
+target_corr = df.corr(numeric_only=True)[["order_sum"]].drop(['order_sum', 'total_spent']).sort_values(by="order_sum", ascending=False)
+
+# Рисуем тепловую карту
+plt.figure(figsize=(4, 6))
+sns.heatmap(target_corr, annot=True, cmap="coolwarm", fmt=".2f", vmin=-1, vmax=1)
+plt.title("Корреляции с order_sum", fontsize=14)
+plt.show()
