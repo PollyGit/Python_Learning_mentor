@@ -12,8 +12,11 @@ d['c'] = 3
 
 
 def dict_view(d: dict) -> str:
+    # перебирать словарь, получая
+    # каждую пару ключ-значение в виде кортежа.
     for k, v in d.items():
         print(f'{k}: {v}')
+
 
 
 dict_view(d)
