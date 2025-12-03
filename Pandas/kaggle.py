@@ -1,0 +1,40 @@
+# https://www.kaggle.com/code/scratchpad/notebookb106bb685b/edit
+
+import pandas as pd
+pd.set_option('display.max_rows', 5)
+from learntools.core import binder; binder.bind(globals())
+from learntools.pandas.creating_reading_and_writing import *
+print("Setup complete.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#
